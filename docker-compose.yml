@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+  patchcore:
+    build:
+      context: .
+    image: patchcore
+    container_name: patchcore
+    ports:
+      - "8023:8023"
+    volumes:
+      - ./notebook:/patchcore/notebook
+      - ./data:/patchcore/data
+      - ./src:/patchcore/src
+      - ./result:/patchcore/result
+    command: jupyter notebook --port=8023 --ip=0.0.0.0 --NotebookApp.token='' --allow-root 
+    # tty: true
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [utility, compute, video]
