@@ -47,8 +47,7 @@ def show_result_image(result, num=None):
         if index == fig_nums-1:
             break
 
-
-def show_bar(results):
+def show_accuracies_auroc(results):
     keys = []
     custom_accuracies = []
     custom_aurocs = []
@@ -64,3 +63,13 @@ def show_bar(results):
     ax[1].bar(keys, custom_accuracies, alpha=0.8, color='green')
     ax[1].set_title("ACCURACY")
 
+def show_score_distribution(result):
+    fig = plt.figure(figsize=(18, 8))
+    plt.hist(result["anomaly_scores"][result["anomaly_labels"] == True], color="red", bins=50)
+    plt.hist(result["anomaly_scores"][result["anomaly_labels"] == False], color="green", bins=50)
+    plt.legend(["anomaly", "normal"])
+    plt.xlabel("anomaly score")
+    plt.ylabel("sample num")
+    th = result["th"]
+    plt.title(f"Threshold value:{th:.2f} anomaly score distribution")
+    plt.show()

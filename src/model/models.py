@@ -57,7 +57,7 @@ class PatchCoreModel(torch.nn.Module):
             patch_scores = _scores.cpu().numpy() 
         return image_scores, patch_scores
         
-    def fit(self, dataloader, update_th=True):
+    def fit(self, dataloader):
         # Extracting features with patch format
         with torch.no_grad():
             torch.cuda.empty_cache()
@@ -79,9 +79,6 @@ class PatchCoreModel(torch.nn.Module):
             print(f"sampled feature shape: {features.shape}")
             # train features
             self.faiss_nn.fit(features)
-            
-            
-        #     self.update_threshold(th=None, train_dataloader=dataloader)
 
     def inference(self, dataloader):
         pred_image_scores = []

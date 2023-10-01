@@ -9,11 +9,9 @@ class AnomalyDataset(torch.utils.data.Dataset):
     def __init__(
         self,
         root_dir,
-        step,
         transform=None
     ):
         self.root_dir = root_dir
-        self.step = step
         self.transform = transform
         self.image_paths = []
         self.annotation_paths = []

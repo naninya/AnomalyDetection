@@ -1,7 +1,9 @@
 import os
 import re
 import shutil
+import cv2
 from glob import glob
+
 from torch.utils.data import DataLoader
 from .datasets import AnomalyDataset
 from .transformers import Transformers
@@ -10,10 +12,9 @@ def load_transform(image_size):
     transform = Transformers(image_size)
     return transform
 
-def get_dataset(data_dir:str, setp, transform):
+def get_dataset(data_dir:str, transform):
     dataset = AnomalyDataset(
         root_dir=data_dir,
-        step=setp,
         transform=transform
     )
     return dataset
@@ -22,9 +23,8 @@ def get_dataloader(dataset, batch_size, shuffle=True, drop_last=True):
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, drop_last=drop_last)
     return dataloader
     
-
 def reform_mvtec_dir_tree(
-        source_dir="../notebook/sample_data", 
+        source_dir="../data/mvtec_original", 
         target_dir="../data"
     ):
     for _source in glob(f"{source_dir}/*"):
@@ -46,10 +46,10 @@ def reform_mvtec_dir_tree(
             
         for index, image_path in enumerate(sorted(glob(f"{source_dir}/{category}/test/**/*.*"))):
             if "good" in image_path:
-                des_path = os.path.join(target_dir, f"{category}", "test", "images", f"normal_{os.path.basename(image_path)}")
+                des_path = os.path.join(target_dir, f"{category}", "valid", "images", f"normal_{os.path.basename(image_path)}")
             else:
                 error_name = image_path.split("/")[-2]
-                des_path = os.path.join(target_dir, f"{category}", "test", "images", f"anomaly_{error_name}_{os.path.basename(image_path)}")
+                des_path = os.path.join(target_dir, f"{category}", "valid", "images", f"anomaly_{error_name}_{os.path.basename(image_path)}")
             os.makedirs(os.path.dirname(des_path), exist_ok=True)
             shutil.copy(image_path, des_path)
             
@@ -58,6 +58,6 @@ def reform_mvtec_dir_tree(
             _name = os.path.basename(image_path).split("_mask")[0]
             mask_name = f"{_name}.png"
             
-            des_path = os.path.join(target_dir, f"{category}", "test", "annotations", f"anomaly_{error_name}_{mask_name}")
+            des_path = os.path.join(target_dir, f"{category}", "valid", "annotations", f"anomaly_{error_name}_{mask_name}")
             os.makedirs(os.path.dirname(des_path), exist_ok=True)
             shutil.copy(image_path, des_path)
